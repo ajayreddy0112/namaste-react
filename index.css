@@ -29,8 +29,10 @@
 }
 
 .restaurant-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 15px;
+  justify-items: center;
 }
 
 .restaurant-card {
@@ -58,4 +60,28 @@
 .filter-btn {
   margin: 10px;
   cursor: pointer;
+}
+
+.shimmer-card {
+  margin: 5px;
+  padding: 5px;
+  width: 200px;
+  height: 450px;
+  background-color: #f0f0f0;
+}
+
+.shimmer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 15px;
+  justify-items: center;
+}
+
+.login {
+  padding: 0px 20px;
+  cursor: pointer;
+}
+
+.filter {
+  display: flex;
 }

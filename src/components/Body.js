@@ -1,71 +1,78 @@
 import RestaurantCard from "./RestaurantCard";
-import resList from "../utils/mockData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { RESTAURANTS_API } from "../utils/constants";
+import { generateProxyUrl } from "../utils/helper";
+import Shimmer from "./Shimmer";
 
 const Body = () => {
-  let listOfRestaurantsJS = [
-    {
-      info: {
-        id: "24494",
-        name: "Domino's Pizza",
-        cloudinaryImageId: "gmuwqh350lpajogp50lw",
-        costForTwo: "₹400 for two",
-        cuisines: ["Pizzas", "Italian", "Pastas", "Desserts"],
-        avgRating: 4.1,
-        sla: {
-          slaString: "30 mins",
-        },
-      },
-    },
-    {
-      info: {
-        id: "24495",
-        name: "KFC",
-        cloudinaryImageId: "gmuwqh350lpajogp50lw",
-        costForTwo: "₹400 for two",
-        cuisines: ["Pizzas", "Italian", "Pastas", "Desserts"],
-        avgRating: 3.9,
-        sla: {
-          slaString: "30 mins",
-        },
-      },
-    },
-    {
-      info: {
-        id: "24496",
-        name: "MCD",
-        cloudinaryImageId: "gmuwqh350lpajogp50lw",
-        costForTwo: "₹400 for two",
-        cuisines: ["Pizzas", "Italian", "Pastas", "Desserts"],
-        avgRating: 4.1,
-        sla: {
-          slaString: "30 mins",
-        },
-      },
-    },
-  ];
-
   // Local State Variable - Super powerful variable
-  const [listOfRestaurants, setListOfRestaurants] = useState(resList);
+  const [listOfRestaurants, setListOfRestaurants] = useState([]);
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
 
-  return (
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const url = generateProxyUrl(RESTAURANTS_API);
+    const data = await fetch(url);
+
+    const json = await data.json();
+
+    // Optional Chaining
+    setListOfRestaurants(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+    setFilteredRestaurant(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+
+    console.log(json?.data, "test");
+  };
+
+  return !filteredRestaurant.length ? (
+    <Shimmer />
+  ) : (
     <div className="body">
       <div className="filter">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              //Filter the restaurant card and update the UI
+              console.log(searchText);
+              const filteredRestaurant = listOfRestaurants.filter((res) =>
+                res?.info.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+              setFilteredRestaurant(filteredRestaurant);
+            }}
+          >
+            Search
+          </button>
+        </div>
         <button
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
               (res) => res.info.avgRating > 4.2
             );
-            setListOfRestaurants(filteredList);
-            console.log(listOfRestaurants);
+            setFilteredRestaurant(filteredList);
           }}
         >
           Top Rated Restaurants
         </button>
       </div>
       <div className="restaurant-container">
-        {listOfRestaurants.map((restaurant) => (
+        {filteredRestaurant.map((restaurant) => (
           <RestaurantCard key={restaurant.info.id} resData={restaurant} />
         ))}
       </div>

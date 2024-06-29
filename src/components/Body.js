@@ -28,8 +28,6 @@ const Body = () => {
     setFilteredRestaurant(
       json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
-
-    console.log(json?.data, "test");
   };
 
   return !filteredRestaurant.length ? (

@@ -35,3 +35,8 @@
 - - Links
 - - Address
 - - Contact
+
+# 2 types Rounting in web apps
+
+- Client Side Routing
+- Server Side Routing
